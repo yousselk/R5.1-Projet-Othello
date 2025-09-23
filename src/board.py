@@ -1,5 +1,3 @@
-# Contient la class Board qui gère la logique du plateau de jeu
-
 # Classe Board : gère la logique du plateau de jeu Othello
 class Board:
 	def __init__(self, size=8):
@@ -28,28 +26,78 @@ class Board:
 		for row in self.board:
 			print(' '.join(symbols[cell] for cell in row))
 
-    # Ne gère pas encore la capture des pions adverses
 	def place_piece(self, row, col, color):
 		"""
 		Place un pion sur le plateau à la position (row, col).
 		- color : 1 pour blanc, -1 pour noir
-		Place le pion seulement si la case est vide.
+		Place le pion seulement si la case est vide et effectue la capture des pions adverses.
 		Retourne True si le placement est réussi, False sinon.
 		"""
-		if self.board[row][col] == 0:
+		if self.board[row][col] != 0:
+			return False
+		# Liste des directions (8 directions)
+		directions = [
+			(0, 1),     # droite
+			(0, -1),    # gauche
+			(1, 0),     # bas
+            (-1, 0),    # haut
+			(1, 1),     # bas-droite
+			(1, -1),    # bas-gauche
+			(-1, 1),    # haut-droite
+			(-1, -1)    # haut-gauche
+		]
+        
+		to_flip = []  # Liste des positions des pions à retourner
+		for dr, dc in directions:
+			# On récupère les positions des pions adverses à retourner dans cette direction
+			flips = self._get_flips(row, col, dr, dc, color)
+			if flips:
+				# Si des pions sont à retourner, on les ajoute à la liste globale
+				to_flip.extend(flips)
+		# Si au moins un pion adverse est capturé, le coup est légal
+		if to_flip:
+			# On place le pion du joueur sur la case choisie
 			self.board[row][col] = color
+			# On retourne tous les pions adverses capturés
+			for r, c in to_flip:
+				self.board[r][c] *= -1  # Multiplie par -1 pour changer la couleur
 			return True
 		return False
+
+	def _get_flips(self, row, col, dr, dc, color):
+		"""
+		Cherche les pions à retourner dans une direction donnée à partir de la case (row, col).
+		- dr, dc : direction (delta row, delta col)
+		- color : couleur du joueur qui joue (1 ou -1)
+		Retourne la liste des positions à retourner si le coup est légal dans cette direction, sinon []
+		"""
+		flips = []  # Liste des positions des pions adverses rencontrés
+		r, c = row + dr, col + dc  # On avance d'une case dans la direction
+		# On parcourt le plateau dans la direction tant qu'on reste dans les limites
+		while 0 <= r < self.size and 0 <= c < self.size:
+			if self.board[r][c] == -color:
+				# Si on trouve un pion adverse, on l'ajoute à la liste
+				flips.append((r, c))
+			elif self.board[r][c] == color:
+				# Si on trouve un pion de la même couleur après des adverses, le coup est légal
+				return flips if flips else []  # On retourne la liste si au moins un pion adverse a été rencontré
+			else:
+				# Si on tombe sur une case vide ou hors plateau, le coup n'est pas légal dans cette direction
+				break
+			r += dr  # Avancer dans la direction
+			c += dc
+		# Si on n'a pas trouvé de pion de la même couleur, on ne retourne rien
+		return []
 
 # Test de la classe Board
 if __name__ == "__main__":
 	b = Board()
 	print("Plateau initial :")
 	b.display_console()
-	print("\nPlacement d'un pion blanc en (2,3):")
+	print("\nPlacement d'un pion blanc en (2,3): Coup non légal")
 	b.place_piece(2, 3, 1)
 	b.display_console()
-	print("\nPlacement d'un pion noir en (4,5):")
+	print("\nPlacement d'un pion noir en (4,5): Coup légal")
 	b.place_piece(4, 5, -1)
 	b.display_console()
     

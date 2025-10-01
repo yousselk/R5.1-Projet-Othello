@@ -1,11 +1,14 @@
 from src.board import Board
 from src.display import Display
+from src.game import Game
 import pygame
 import sys
 
 def main():
-    board = Board()  # Initialise le plateau
-    display = Display(board)  # Initialise la fenêtre de jeu
+    pygame.init()
+
+    game = Game()                    # Contient le plateau + la logique de tour
+    display = Display(game.board)    # Affiche le plateau + pions
 
     running = True
     while running:
@@ -13,7 +16,14 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        display.draw_board() # Affiche le plateau
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Récupérer la position du clic
+                mouse_pos = pygame.mouse.get_pos()
+                # Appeler la logique de jeu
+                game.handle_click(mouse_pos)
+
+        # Afficher le plateau et les pions à jour
+        display.draw_board()
 
     pygame.quit()
     sys.exit()

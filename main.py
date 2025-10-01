@@ -1,32 +1,22 @@
+from src.board import Board
+from src.display import Display
 import pygame
 import sys
 
-# Initialisation de Pygame
-pygame.init()
+def main():
+    board = Board()  # Initialise le plateau
+    display = Display(board)  # Initialise la fenêtre de jeu
 
-# Création de la fenêtre de jeu
-WINDOW_SIZE = (480, 480)
-screen = pygame.display.set_mode(WINDOW_SIZE)
-pygame.display.set_caption("Othello")
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-# Charger l'image du plateau
-plateau_image = pygame.image.load("assets/plateau_othello.png")
+        display.draw_board() # Affiche le plateau
 
-# Redimensionner l’image au besoin (si elle n’est pas exactement 480x480)
-plateau_image = pygame.transform.scale(plateau_image, WINDOW_SIZE)
+    pygame.quit()
+    sys.exit()
 
-# Boucle principale du jeu
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    
-    # Afficher l’image dans la fenêtre
-    screen.blit(plateau_image, (0, 0))
-
-    # Mettre à jour l'affichage
-    pygame.display.flip()
-
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    main()

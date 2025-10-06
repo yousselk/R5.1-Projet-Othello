@@ -64,17 +64,16 @@ class Board:
 				self.board[r][c] *= -1  # Multiplie par -1 pour changer la couleur
 			return True
 		return False
-	
 	def has_valid_move(self, color):
-		for row in range(self.size):
-			for col in range(self.size):
-				if self.board[row][col] == 0:
-					for dr, dc in self.DIRECTIONS:
-						if self._get_flips(row, col, dr, dc, color):
-							return True
-		return False
+		"""
+		Vérifie si le joueur actif a au moins un coup valide.
+		"""
+		return bool(self.get_valid_moves(color))
 	
 	def get_valid_moves(self, color):
+		"""
+		Retourne une liste des coups valides pour le joueur actif.
+		"""
 		moves = []
 		for row in range(self.size):
 			for col in range(self.size):

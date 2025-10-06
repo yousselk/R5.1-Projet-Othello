@@ -1,3 +1,4 @@
+import pygame
 from src.board import Board
 
 class Game:
@@ -9,11 +10,16 @@ class Game:
         """
         self.board = Board()
         self.current_player = -1  # Noir commence toujours
+        self.game_over = False   # Partie en cours
+        self.end_message = ""
 
     def handle_click(self, mouse_pos, window_size=(480, 480)):
         """
         Gère un clic utilisateur sur la fenêtre de jeu.
         """
+        if self.game_over:
+            return  # Ignore les clics si le jeu est terminé
+        
         cell_size = window_size[0] // self.board.size
         x, y = mouse_pos
 
@@ -37,11 +43,19 @@ class Game:
                 self.current_player *= -1
 
     def end_game(self):
+        """
+        Affiche le résultat de la partie.
+        """
+        self.game_over = True
         blacks = sum(row.count(-1) for row in self.board.board)
         whites = sum(row.count(1) for row in self.board.board)
+
         if blacks > whites:
-            print("Victoire des noirs !")
+            result = "Victoire des Noirs !"
         elif whites > blacks:
-            print("Victoire des blancs !")
+            result = "Victoire des Blancs !"
         else:
-            print("Égalité !")
+            result = "Égalité !"
+
+        self.end_message = result
+        pygame.display.set_caption(f"Othello - {result}")

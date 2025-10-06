@@ -30,9 +30,13 @@ class Display:
         # Dessine les pions présents sur le plateau
         self.draw_pieces()
 
-        # Met en évidence les coups possibles pour le joueur actuel
-        valid_moves = self.board.get_valid_moves(self.game.current_player)
-        self.draw_highlight(valid_moves)
+        # Affiche les coups valides si la partie n’est pas finie
+        if not self.game.game_over:
+            valid_moves = self.board.get_valid_moves(self.game.current_player)
+            self.draw_highlight(valid_moves)
+        else:
+            # Affiche le message de fin de partie
+            self.draw_end_message(self.game.end_message)
 
         # Rafraîchit la fenêtre pour afficher les changements
         pygame.display.flip()
@@ -53,8 +57,17 @@ class Display:
                     pygame.draw.circle(self.screen, color, (x, y), self.cell_size // 2 - 5)
     
     def draw_highlight(self, valid_moves):
+        """
+        Met en évidence les cases où le joueur actuel peut jouer.
+        """
         for row, col in valid_moves:
             x = col * self.cell_size
             y = row * self.cell_size
             rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
             pygame.draw.rect(self.screen, (255, 255, 0), rect, 2)
+
+    def draw_end_message(self, message):
+        font = pygame.font.SysFont(None, 48)
+        text_surface = font.render(message, True, (255, 0, 0))
+        text_rect = text_surface.get_rect(center=(self.window_size[0] // 2, self.window_size[1] // 2))
+        self.screen.blit(text_surface, text_rect)

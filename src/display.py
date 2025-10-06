@@ -2,14 +2,15 @@
 import pygame
 
 class Display:    
-    def __init__(self, board, window_size=(480, 480)):
+    def __init__(self, game, window_size=(480, 480)):
         """
         Initialise la fenêtre de jeu et charge l'image du plateau.
         """
         pygame.init()
-        self.board = board
+        self.game = game
+        self.board = game.board
         self.window_size = window_size
-        self.cell_size = window_size[0] // board.size
+        self.cell_size = window_size[0] // game.board.size
         self.screen = pygame.display.set_mode(window_size)
         pygame.display.set_caption("Othello")
         self.plateau_image = pygame.image.load("assets/plateau_othello.png")
@@ -24,6 +25,10 @@ class Display:
 
         # Dessine les pions présents sur le plateau
         self.draw_pieces()
+
+        # Met en évidence les coups possibles pour le joueur actuel
+        valid_moves = self.board.get_valid_moves(self.game.current_player)
+        self.draw_highlight(valid_moves)
 
         # Rafraîchit la fenêtre pour afficher les changements
         pygame.display.flip()
@@ -42,3 +47,10 @@ class Display:
                     y = row * self.cell_size + self.cell_size // 2
                     # Dessiner le pion (cercle)
                     pygame.draw.circle(self.screen, color, (x, y), self.cell_size // 2 - 5)
+    
+    def draw_highlight(self, valid_moves):
+        for row, col in valid_moves:
+            x = col * self.cell_size
+            y = row * self.cell_size
+            rect = pygame.Rect(x, y, self.cell_size, self.cell_size)
+            pygame.draw.rect(self.screen, (255, 255, 0), rect, 2)

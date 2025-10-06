@@ -73,6 +73,17 @@ class Board:
 						if self._get_flips(row, col, dr, dc, color):
 							return True
 		return False
+	
+	def get_valid_moves(self, color):
+		moves = []
+		for row in range(self.size):
+			for col in range(self.size):
+				if self.board[row][col] == 0:
+					for dr, dc in self.DIRECTIONS:
+						if self._get_flips(row, col, dr, dc, color):
+							moves.append((row, col))
+							break
+		return moves
 
 	def _get_flips(self, row, col, dr, dc, color):
 		"""

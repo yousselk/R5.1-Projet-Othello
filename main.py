@@ -1,4 +1,3 @@
-from src.board import Board
 from src.display import Display
 from src.game import Game
 import pygame
@@ -7,8 +6,8 @@ import sys
 def main():
     pygame.init()
 
-    game = Game()                    # Contient le plateau + la logique de tour
-    display = Display(game.board)    # Affiche le plateau + pions
+    game = Game()               # Contient le plateau + la logique de tour
+    display = Display(game)     # Affiche le plateau + pions
 
     running = True
     while running:

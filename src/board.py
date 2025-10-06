@@ -1,5 +1,17 @@
 # Classe Board : gère la logique du plateau de jeu Othello
 class Board:
+	# Liste des directions (8 directions)
+	DIRECTIONS = [
+		(0, 1),     # droite
+		(0, -1),    # gauche
+		(1, 0),     # bas
+        (-1, 0),    # haut
+		(1, 1),     # bas-droite
+		(1, -1),    # bas-gauche
+		(-1, 1),    # haut-droite
+		(-1, -1)    # haut-gauche
+	]
+
 	def __init__(self, size=8):
 		"""
 		Initialise le plateau de jeu Othello.
@@ -35,20 +47,9 @@ class Board:
 		"""
 		if self.board[row][col] != 0:
 			return False
-		# Liste des directions (8 directions)
-		directions = [
-			(0, 1),     # droite
-			(0, -1),    # gauche
-			(1, 0),     # bas
-            (-1, 0),    # haut
-			(1, 1),     # bas-droite
-			(1, -1),    # bas-gauche
-			(-1, 1),    # haut-droite
-			(-1, -1)    # haut-gauche
-		]
         
 		to_flip = []  # Liste des positions des pions à retourner
-		for dr, dc in directions:
+		for dr, dc in self.DIRECTIONS:
 			# On récupère les positions des pions adverses à retourner dans cette direction
 			flips = self._get_flips(row, col, dr, dc, color)
 			if flips:
@@ -62,6 +63,15 @@ class Board:
 			for r, c in to_flip:
 				self.board[r][c] *= -1  # Multiplie par -1 pour changer la couleur
 			return True
+		return False
+	
+	def has_valid_move(self, color):
+		for row in range(self.size):
+			for col in range(self.size):
+				if self.board[row][col] == 0:
+					for dr, dc in self.DIRECTIONS:
+						if self._get_flips(row, col, dr, dc, color):
+							return True
 		return False
 
 	def _get_flips(self, row, col, dr, dc, color):

@@ -23,6 +23,10 @@ class Display:
         # Affiche le plateau graphique en fond
         self.screen.blit(self.plateau_image, (0, 0))
 
+        # Met à jour le titre de la fenêtre avec le joueur actif
+        player_name = "Noir" if self.game.current_player == -1 else "Blanc"
+        pygame.display.set_caption(f"Othello - Tour du joueur : {player_name}")
+
         # Dessine les pions présents sur le plateau
         self.draw_pieces()
 

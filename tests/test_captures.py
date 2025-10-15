@@ -8,36 +8,36 @@ class TestCaptures(unittest.TestCase):
         self.board.board = [[0 for _ in range(8)] for _ in range(8)]  # Plateau vide
 
     def test_horizontal_capture(self):
-        # Prépare un alignement : Noir - Blanc - ? -> placement ici doit capturer en horizontal
+        # Prépare un alignement horizontal
         self.board.board[3][2] = -1  # Noir
         self.board.board[3][3] = 1   # Blanc
 
         result = self.board.place_piece(3, 4, -1)  # Noir joue à droite
 
         self.assertTrue(result)
-        self.assertEqual(self.board.board[3][3], -1)  # Le pion blanc doit être capturé
-        self.assertEqual(self.board.board[3][4], -1)  # Le nouveau pion est bien placé
+        self.assertEqual(self.board.board[3][3], -1)
+        self.assertEqual(self.board.board[3][4], -1)
 
     def test_vertical_capture(self):
-        # Prépare un alignement vertical : Noir - Blanc - ?
+        # Prépare un alignement vertical
         self.board.board[2][3] = -1  # Noir
         self.board.board[3][3] = 1   # Blanc
 
         result = self.board.place_piece(4, 3, -1)  # Noir joue en dessous
 
         self.assertTrue(result)
-        self.assertEqual(self.board.board[3][3], -1)  # Le pion blanc est capturé
+        self.assertEqual(self.board.board[3][3], -1)
         self.assertEqual(self.board.board[4][3], -1)
 
     def test_diagonal_capture(self):
-        # Prépare un alignement diagonal (↘)
+        # Prépare un alignement diagonal
         self.board.board[2][2] = -1  # Noir
         self.board.board[3][3] = 1   # Blanc
 
-        result = self.board.place_piece(4, 4, -1)  # Noir joue en diagonale
+        result = self.board.place_piece(4, 4, -1)  # Noir joue en diagonale bas-droite
 
         self.assertTrue(result)
-        self.assertEqual(self.board.board[3][3], -1)  # Capture diagonale
+        self.assertEqual(self.board.board[3][3], -1)
         self.assertEqual(self.board.board[4][4], -1)
 
 if __name__ == '__main__':

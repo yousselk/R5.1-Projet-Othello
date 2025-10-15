@@ -20,6 +20,26 @@ class TestGame(unittest.TestCase):
         # Vérifie que le joueur courant a changé (devient blanc = 1)
         self.assertEqual(self.game.current_player, 1)
 
+    def test_turn_passes_when_no_valid_move(self):
+        game = Game()
+
+        # Plateau dans un état où seul le joueur blanc peut jouer
+        game.board.board = [[-1 for _ in range(8)] for _ in range(8)]
+        game.board.board[0][0] = 0  # seule case vide
+        game.current_player = 1  # Blanc
+
+        # Blanc n'a pas de coup valide
+        self.assertFalse(game.board.has_valid_move(1))
+
+        # Mais Noir non plus
+        self.assertFalse(game.board.has_valid_move(-1))
+
+        # On simule un clic inutile pour déclencher la vérification de fin de partie
+        game.handle_click((5, 5))
+
+        self.assertTrue(game.game_over)
+        self.assertIn("Victoire", game.end_message)
+
     def test_game_end_when_no_moves_for_both_players(self):
         game = Game()
 
